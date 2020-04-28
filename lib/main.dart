@@ -22,6 +22,7 @@ class FuelForm extends StatefulWidget {
 
 class _MyHomePageState extends State<FuelForm> {
   String result = '';
+  final double _formDistance = 5.0;
   final _currencies = ['Dollars', 'Euro', 'Pounds'];
   String _currency = 'Dollars';
   TextEditingController distanceController = TextEditingController();
@@ -40,66 +41,115 @@ class _MyHomePageState extends State<FuelForm> {
         padding: EdgeInsets.all(15.0),
         child: Column(
           children: <Widget>[
-            TextField(
-              controller: distanceController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Distance',
-                hintText: 'E.g. 124',
-                labelStyle: textStyle,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5.0),
+            Padding(
+              padding: EdgeInsets.only(
+                top: _formDistance,
+                bottom: _formDistance,
+              ),
+              child: TextField(
+                controller: distanceController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Distance',
+                  hintText: 'E.g. 124',
+                  labelStyle: textStyle,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
                 ),
               ),
             ),
-            TextField(
-              controller: avgController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Distance per Unit',
-                hintText: 'E.g. 17',
-                labelStyle: textStyle,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5.0),
+            Padding(
+              padding: EdgeInsets.only(
+                top: _formDistance,
+                bottom: _formDistance,
+              ),
+              child: TextField(
+                controller: avgController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Distance per Unit',
+                  hintText: 'E.g. 17',
+                  labelStyle: textStyle,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
                 ),
               ),
             ),
-            TextField(
-              controller: priceController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Price',
-                hintText: 'E.g. 1.65',
-                labelStyle: textStyle,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5.0),
+            Padding(
+              padding: EdgeInsets.only(
+                top: _formDistance,
+                bottom: _formDistance,
+              ),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: TextField(
+                      controller: priceController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelText: 'Price',
+                        hintText: 'E.g. 1.65',
+                        labelStyle: textStyle,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(width: _formDistance * 5),
+                  Expanded(
+                    child: DropdownButton<String>(
+                      items: _currencies.map((String value) {
+                        return DropdownMenuItem(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      value: _currency,
+                      onChanged: (String value) {
+                        _onDropDownChanged(value);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: RaisedButton(
+                    color: Theme.of(context).primaryColorDark,
+                    textColor: Theme.of(context).primaryColorLight,
+                    onPressed: () {
+                      setState(() {
+                        result = _calculate();
+                      });
+                    },
+                    child: Text(
+                      'Submit',
+                      textScaleFactor: 1.5,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            DropdownButton<String>(
-              items: _currencies.map((String value) {
-                return DropdownMenuItem(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              value: _currency,
-              onChanged: (String value) {
-                _onDropDownChanged(value);
-              },
-            ),
-            RaisedButton(
-              color: Theme.of(context).primaryColorDark,
-              textColor: Theme.of(context).primaryColorLight,
-              onPressed: () {
-                setState(() {
-                  result = _calculate();
-                });
-              },
-              child: Text(
-                'Submit',
-                textScaleFactor: 1.5,
-              ),
+                Container(width: _formDistance * 5),
+                Expanded(
+                  child: RaisedButton(
+                    color: Theme.of(context).buttonColor,
+                    textColor: Theme.of(context).primaryColorDark,
+                    onPressed: () {
+                      setState(() {
+                        _reset();
+                      });
+                    },
+                    child: Text(
+                      'Reset',
+                      textScaleFactor: 1.5,
+                    ),
+                  ),
+                ),
+              ],
             ),
             Text(result),
           ],
@@ -118,10 +168,22 @@ class _MyHomePageState extends State<FuelForm> {
     double _distance = double.parse(distanceController.text);
     double _fuelCost = double.parse(priceController.text);
     double _consumption = double.parse(avgController.text);
-    double _totalCost = _distance /_consumption * _fuelCost;
+    double _totalCost = _distance / _consumption * _fuelCost;
 
     String _result = 'The total cost of your trip is ' +
-                      _totalCost.toStringAsFixed(2) + ' ' + _currency;
+        _totalCost.toStringAsFixed(2) +
+        ' ' +
+        _currency;
     return _result;
+  }
+
+  void _reset() {
+    distanceController.clear();
+    avgController.clear();
+    priceController.clear();
+
+    setState(() {
+      result = '';
+    });
   }
 }
