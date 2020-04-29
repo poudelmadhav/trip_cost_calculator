@@ -140,7 +140,7 @@ class _MyHomePageState extends State<FuelForm> {
                     textColor: Theme.of(context).primaryColorDark,
                     onPressed: () {
                       setState(() {
-                        _reset();
+                        _showConfirmDialogBox(context);
                       });
                     },
                     child: Text(
@@ -185,5 +185,37 @@ class _MyHomePageState extends State<FuelForm> {
     setState(() {
       result = '';
     });
+  }
+
+  void _showConfirmDialogBox(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      title: Text('Are you sure?'),
+      content: Text('Items will be cleared.'),
+      actions: <Widget>[
+        FlatButton(
+          color: Theme.of(context).primaryColorDark,
+          textColor: Theme.of(context).primaryColorLight,
+          onPressed: () {
+            _reset();
+            Navigator.of(context).pop();
+          },
+          child: Text('Yes'),
+        ),
+        FlatButton(
+          color: Theme.of(context).buttonColor,
+          textColor: Theme.of(context).primaryColorDark,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text('Close'),
+        ),
+      ],
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }
