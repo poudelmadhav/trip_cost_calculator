@@ -188,6 +188,8 @@ class _MyHomePageState extends State<FuelForm> {
   }
 
   void _showConfirmDialogBox(BuildContext context) {
+    /// Here we can use CupertinoAlertDialog instead of AlertDialog for iPhone style dialog
+    /// But we need to import 'package:flutter/cupertino.dart';
     AlertDialog alert = AlertDialog(
       title: Text('Clear the fields?'),
       content: Text('All fields will be cleared.'),
